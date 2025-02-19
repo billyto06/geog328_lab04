@@ -130,30 +130,19 @@
                         }
                     });
                     console.log("Layer added");
-                });
 
-                const layers = [
-                    '0-9', '10-19', '20-49', '50-99', '100-199', '200-499', '500-999', '1000 and more'
-                ];
-                const colors = [
-                    '#FFEDA070', '#FED97670', '#FEB24C70', '#FD8D3C70', '#FC4E2A70', '#E31A1C70', '#BD002670', '#80002670'
-                ];
-                const legend = document.getElementById('legend');
-                legend.innerHTML = "<b>Population Density<br>(people/sq.mi.)</b><br><br>";
-                
-                layers.forEach((layer, i) => {
-                    const color = colors[i];
-                    console.log("Adding legend item:", layer, color);
-                    const item = document.createElement('div');
-                    const key = document.createElement('span');
-                    key.className = 'legend-key';
-                    key.style.backgroundColor = color;
-
-                    const value = document.createElement('span');
-                    value.innerHTML = `${layer}`;
-                    item.appendChild(key);
-                    item.appendChild(value);
-                    legend.appendChild(item);
+                    map.on('mousemove', (event) => {
+                        const state = map.queryRenderedFeatures(event.point, {
+                            layers: ['stateData-layer']
+                        });
+                        
+                        if (state.length > 0) {
+                            document.getElementById('text-description').innerHTML = 
+                                `<h3>${state[0].properties.name}</h3><p><strong><em>${state[0].properties.density}</strong> people per sq. mile</em></p>`;
+                        } else {
+                            document.getElementById('text-description').innerHTML = `<p>Hover over a state!</p>`;
+                        }
+                    });
                 });
             } catch (error) {
                 console.error("Error loading data:", error);
